@@ -31,12 +31,16 @@ class User < ApplicationRecord
       email: self.email,
       username: self.username,
       description: self.description,
-      avatar_large: self.avatar.url(:large),
-      avatar_medium: self.avatar.url(:medium),
-      avatar_small: self.avatar.url(:small),
-      avatar_thumb: self.avatar.url(:thumb),
+      avatar_large: get_url(self.avatar.variant(:large)),
+      avatar_medium: get_url(self.avatar.variant(:medium)),
+      avatar_small: get_url(self.avatar.variant(:small)),
+      avatar_thumb: get_url(self.avatar.variant(:thumb)),
       gender: self.gender,
       confirmed_at: self.confirmed_at
     }
+  end
+
+  def get_url(image) 
+    Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
   end
 end

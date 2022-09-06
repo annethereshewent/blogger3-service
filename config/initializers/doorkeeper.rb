@@ -2,10 +2,7 @@
 
 module CustomTokenResponse
   def body
-    puts "test?????"
     user = User.find(@token.resource_owner_id)
-
-    puts "inside here....... there might be an error in here"
 
     additional_data = {
         user: user.render(),
@@ -38,10 +35,6 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_from_credentials do |routes|
     user = User.find_by_email(request.params[:email])
-
-    puts user.valid_password?(request.params[:password])
-    puts user.username
-
     user if user and user.valid_password?(request.params[:password])
   end
 

@@ -27,7 +27,6 @@ class User < ApplicationRecord
 
   def render
     {
-      id: self.id,
       email: self.email,
       username: self.username,
       description: self.description,
@@ -41,6 +40,6 @@ class User < ApplicationRecord
   end
 
   def get_url(image) 
-    Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
+    Rails.application.routes.url_helpers.rails_blob_path image, only_path: true if image.present? 
   end
 end

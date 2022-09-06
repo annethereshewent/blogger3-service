@@ -1,32 +1,5 @@
 # frozen_string_literal: true
 
-module CustomTokenResponse
-  def body
-    user = User.find(@token.resource_owner_id)
-
-    additional_data = {
-        user: user.render(),
-    }
-
-    # call original `#body` method and merge its result with the additional data hash
-    super.merge(additional_data)
-  end
-end
-
-module CustomTokenErrorResponse
-  def body
-    {
-      status_code: 400,
-      message: 'Bad Request',
-      details: 'The credentials entered were invalid.'
-    }
-    # or merge with existing values by
-    # super.merge({key: value})
-  end
-end
-
-
-
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (requires ORM extensions installed).
   # Check the list of supported ORMs here: https://github.com/doorkeeper-gem/doorkeeper#orms
@@ -35,7 +8,7 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_from_credentials do |routes|
     user = User.find_by_email(request.params[:email])
-    user if user and user.valid_password?(request.params[:password])
+    user if user && user.valid_password?(request.params[:password])
   end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
@@ -558,8 +531,3 @@ Doorkeeper::JWT.configure do
   # `nil`.
   encryption_method :hs512
 end
-
-
-
-Doorkeeper::OAuth::TokenResponse.send :prepend, CustomTokenResponse
-# Doorkeeper::OAuth::ErrorResponse.send :prepend, CustomTokenErrorResponse

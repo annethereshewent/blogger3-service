@@ -1,5 +1,6 @@
 
 class User < ApplicationRecord
+  include Helpers
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -30,16 +31,14 @@ class User < ApplicationRecord
       email: self.email,
       username: self.username,
       description: self.description,
-      avatar_large: get_url(self.avatar.variant(:large)),
-      avatar_medium: get_url(self.avatar.variant(:medium)),
-      avatar_small: get_url(self.avatar.variant(:small)),
-      avatar_thumb: get_url(self.avatar.variant(:thumb)),
+      avatars: {
+        large: get_image_url(self.avatar.variant(:large)),
+        medium: get_image_url(self.avatar.variant(:medium)),
+        small: get_image_url(self.avatar.variant(:small)),
+        thumb: get_image_url(self.avatar.variant(:thumb)),
+      },
       gender: self.gender,
       confirmed_at: self.confirmed_at
     }
-  end
-
-  def get_url(image) 
-    Rails.application.routes.url_helpers.rails_blob_path image, only_path: true if image.present? 
   end
 end

@@ -11,12 +11,13 @@ class Api::V1::Users::ConfirmationsController < Devise::ConfirmationsController
 
   # GET /resource/confirmation?confirmation_token=abcdef
   def show
-    super do |resource|
-      if resource.errors.empty?
-        return redirect_to ENV["BLOGGER_CLIENT_URL"]
+    super do |user|
+      if user.errors.empty?
+        UsersChannel.broadcast_to(user, { confirmed: true })
       else
-        return redirect_to ENV["BLOGGER_CLIENT_URL"]
+        UsersChannel.broadcast_to(user, { confirmed: false })
       end
+      return redirect_to ENV["BLOGGER_CLIENT_URL"]
     end
   end
 

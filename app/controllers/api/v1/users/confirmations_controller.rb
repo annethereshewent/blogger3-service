@@ -17,6 +17,9 @@ class Api::V1::Users::ConfirmationsController < Devise::ConfirmationsController
       else
         UsersChannel.broadcast_to(user, { confirmed: false })
       end
+
+      sleep 2
+
       return redirect_to ENV["BLOGGER_CLIENT_URL"]
     end
   end

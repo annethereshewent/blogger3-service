@@ -19,7 +19,9 @@ class Api::V1::Users::DashboardController < ApplicationController
     else
       render json: {
         message: 'user has not confirmed email',
-        code: C_NOT_CONFIRMED
+        code: C_NOT_CONFIRMED,
+        # the frontend will need the user regardless
+        user: @user.render()
       }, status: 400
     end
   end

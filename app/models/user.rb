@@ -6,7 +6,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
 
-  has_one_attached :avatar do |attachable| 
+  has_one_attached :avatar do |attachable|
     attachable.variant :large, resize_to_limit: [500,500]
     attachable.variant :medium, resize_to_limit: [150,150]
     attachable.variant :small, resize_to_limit: [80,80]
@@ -38,7 +38,8 @@ class User < ApplicationRecord
         thumb: get_image_url(self.avatar.variant(:thumb)),
       },
       gender: self.gender,
-      confirmed_at: self.confirmed_at
+      confirmed_at: self.confirmed_at,
+      avatar_dialog: self.avatar_dialog
     }
   end
 end

@@ -11,6 +11,16 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   end
 
+  def hide_avatar_dialog
+    @user.avatar_dialog = true
+
+    @user.save
+
+    render json: {
+      changed: true
+    }
+  end
+
   def dashboard
     unless (@user.confirmed_at.nil?)
       render json: {

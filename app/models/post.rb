@@ -1,10 +1,10 @@
 class Post < ApplicationRecord
-  include Helpers 
-  has_many_attached :images do |attachable| 
+  include ImageHelpers
+  has_many_attached :images do |attachable|
     attachable.variant :preview, resize_to_limit: [400, nil]
   end
 
-  def render 
+  def render
     {
       body: self.body,
       avatar: get_image_url(self.user.avatar(:medium))

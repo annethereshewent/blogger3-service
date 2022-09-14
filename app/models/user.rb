@@ -1,14 +1,14 @@
 
 class User < ApplicationRecord
-  include Helpers
+  include ImageHelpers
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
 
   has_one_attached :avatar do |attachable|
-    attachable.variant :large, resize_to_limit: [500,500]
-    attachable.variant :medium, resize_to_limit: [150,150]
+    attachable.variant :large, resize_to_limit: [400,400]
+    attachable.variant :medium, resize_to_limit: [200, 200]
     attachable.variant :small, resize_to_limit: [80,80]
     attachable.variant :thumb, resize_to_limit: [50,50]
   end

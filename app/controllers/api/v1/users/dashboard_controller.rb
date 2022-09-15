@@ -3,7 +3,23 @@ C_NOT_FOUND = 404
 class Api::V1::Users::DashboardController < ApplicationController
   before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_blog_posts, :fetch_comments]
 
-  def fetch_blog_posts
+  def fetch_posts
+    posts = @user.posts
+
+    render json: {
+      posts: posts.map(&:render)
+    }
+  end
+
+  def create_post
+    post = Post.new(post_params)
+    post.user_id = @user.id
+
+    post.save()
+
+    render json: {
+      post: post
+    }
 
   end
 
@@ -46,4 +62,9 @@ class Api::V1::Users::DashboardController < ApplicationController
       }, status: 404
     end
   end
+
+  private
+    def post_params
+      params.permit(:body, :repost_id, :images)
+    end
 end

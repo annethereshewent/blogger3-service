@@ -18,6 +18,9 @@ Rails.application.routes.draw do
         get '/dashboard' => 'dashboard#dashboard'
         post 'hide_avatar_dialog' => 'dashboard#hide_avatar_dialog'
         post 'update_avatar' => 'users#update_avatar'
+
+        get '/posts' => 'dashboard#fetch_posts'
+        post '/posts' => 'dashboard#create_post'
       end
 
       namespace :account do

@@ -16,6 +16,8 @@ class User < ApplicationRecord
     attachable.variant :default, resize_to_limit: [1500,500]
   end
 
+  has_many :posts
+
   has_many :access_grants,
     class_name: 'Doorkeeper::AccessGrant',
     foreign_key: :resource_owner_id,

@@ -9,6 +9,7 @@ class Post < ApplicationRecord
 
   def render
     {
+      id: self.id,
       body: self.body,
       avatar: get_image_url(self.user.avatar.variant(:small)),
       images: self.images.map{ |image| get_image_url(image.variant(:preview)) },

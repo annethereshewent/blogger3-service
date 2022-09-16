@@ -1,6 +1,6 @@
 module ImageHelpers
   def get_image_url(image)
-    Rails.application.routes.url_helpers.rails_blob_path image, only_path: true if image.present?
+    Rails.application.routes.url_helpers.rails_blob_url image, host: ENV["BLOGGER_BASE"] if image.present?
   end
 
   def decode_base64_image(base64_url)

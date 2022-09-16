@@ -4,7 +4,7 @@ class Api::V1::Users::DashboardController < ApplicationController
   before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_blog_posts, :fetch_comments]
 
   def fetch_posts
-    posts = @user.posts
+    posts = @user.posts.order(updated_at: :desc)
 
     render json: {
       posts: posts.map(&:render)
@@ -12,13 +12,15 @@ class Api::V1::Users::DashboardController < ApplicationController
   end
 
   def create_post
-    post = Post.new(post_params)
-    post.user_id = @user.id
-
-    post.save()
+    post = Post.create(
+      body:  ActionController::Base.helpers.sanitize(params[:body], tags: ["br"]),
+      user_id: @user.id,
+      repost_id: params[:repost_id],
+      images: params[:images]
+    )
 
     render json: {
-      post: post
+      post: post.render()
     }
 
   end

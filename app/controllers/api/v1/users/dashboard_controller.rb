@@ -1,6 +1,7 @@
 C_NOT_CONFIRMED = 100
 C_NOT_FOUND = 404
 class Api::V1::Users::DashboardController < ApplicationController
+  include ERB::Util
   before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_blog_posts, :fetch_comments]
 
   def fetch_posts
@@ -13,7 +14,7 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   def create_post
     post = Post.create(
-      body:  ActionController::Base.helpers.sanitize(params[:body], tags: ["br"]),
+      body:  html_escape(params[:body]),
       user_id: @user.id,
       repost_id: params[:repost_id],
       images: params[:images]

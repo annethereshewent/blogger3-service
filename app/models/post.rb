@@ -11,7 +11,7 @@ class Post < ApplicationRecord
     {
       id: self.id,
       body: self.body,
-      avatar: get_image_url(self.user.avatar.variant(:small)),
+      user: self.user.render(),
       images: self.images.map{ |image| get_image_url(image.variant(:preview)) },
       created_at: self.created_at,
       updated_at: self.updated_at

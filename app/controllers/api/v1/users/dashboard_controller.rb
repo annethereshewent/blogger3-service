@@ -48,7 +48,7 @@ class Api::V1::Users::DashboardController < ApplicationController
     }
   end
 
-  def dashboard
+  def user
     unless (@user.confirmed_at.nil?)
       render json: {
         user: @user.render()

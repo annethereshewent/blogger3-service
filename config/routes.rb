@@ -16,8 +16,10 @@ Rails.application.routes.draw do
         get ':id/confirmations/status' => 'users#confirmation_status'
 
         get '/user' => 'dashboard#user'
-        post 'hide_avatar_dialog' => 'dashboard#hide_avatar_dialog'
-        post 'update_avatar' => 'users#update_avatar'
+        post '/hide_avatar_dialog' => 'dashboard#hide_avatar_dialog'
+        post '/update_avatar' => 'users#update_avatar'
+        post '/user_exists' => 'users#user_exists'
+        post '/email_exists' => 'users#email_exists'
 
         get '/posts' => 'dashboard#fetch_posts'
         post '/posts' => 'dashboard#create_post'

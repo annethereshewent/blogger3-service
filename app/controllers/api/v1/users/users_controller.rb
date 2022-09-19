@@ -1,12 +1,28 @@
 class Api::V1::Users::UsersController < ApplicationController
   include ImageHelpers
 
-  before_action :doorkeeper_authorize!, :current_resource_owner, except: [:confirmation_status]
+  before_action :doorkeeper_authorize!, :current_resource_owner, except: [:confirmation_status, :user_exists, :email_exists]
   def confirmation_status
     user = User.find(params[:id])
 
     return render json: {
       confirmed: user.confirmed_at != nil
+    }
+  end
+
+  def user_exists
+    user = User.where(username: params[:username]).first
+
+    render json: {
+      exists: !user.nil?
+    }
+  end
+
+  def email_exists
+    user = User.find_by_email(params[:email])
+
+    render json: {
+      exists: !user.nil?
     }
   end
 

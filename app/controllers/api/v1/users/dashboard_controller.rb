@@ -1,12 +1,16 @@
+require 'open-uri'
+
 C_POST_BODY_EMPTY=101
 C_NOT_CONFIRMED = 100
 C_NOT_FOUND = 404
+
 class Api::V1::Users::DashboardController < ApplicationController
   include ERB::Util
+  include ImageHelpers
   before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_blog_posts, :fetch_comments]
 
   def fetch_posts
-    posts = @user.posts.order(updated_at: :desc)
+    posts = @user.posts.limit(20).order(updated_at: :desc)
 
     render json: {
       posts: posts.map(&:render)
@@ -21,6 +25,9 @@ class Api::V1::Users::DashboardController < ApplicationController
         repost_id: params[:repost_id],
         images: params[:images]
       )
+
+      # finally process any gifs that may be in request
+      save_gif(post, params[:gif]) if !params[:gif].nil?
 
       render json: {
         post: post.render()
@@ -91,5 +98,12 @@ class Api::V1::Users::DashboardController < ApplicationController
   private
     def post_params
       params.permit(:body, :repost_id, :images)
+    end
+
+    def save_gif(post, gif_url)
+      post.gifs.attach(
+        io: URI.parse(gif_url).open,
+        filename: gif_url.split('/').last
+      )
     end
 end

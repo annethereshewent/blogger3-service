@@ -1,3 +1,6 @@
+require 'net/http'
+require 'streamio-ffmpeg'
+
 module ImageHelpers
   def get_image_url(image)
     Rails.application.routes.url_helpers.rails_blob_url image, host: ENV["BLOGGER_BASE"] if image.present?
@@ -14,5 +17,16 @@ module ImageHelpers
 
   def random_string
     @string ||= SecureRandom.urlsafe_base64
+  end
+
+  def convert_gif_to_mp4(gif_url)
+    movie = FFMPEG::Movie.new(gif_url)
+
+    filename = "#{SecureRandom.urlsafe_base64}.mp4"
+    output_path = Rails.root.join("tmp", "storage", filename).to_s
+
+    movie.transcode(output_path)
+
+    [output_path, filename]
   end
 end

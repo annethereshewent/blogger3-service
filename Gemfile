@@ -47,6 +47,8 @@ gem "image_processing", "~> 1.2"
 
 gem 'httparty'
 
+gem 'streamio-ffmpeg'
+
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem "rack-cors"
 

@@ -16,6 +16,7 @@ class Post < ApplicationRecord
       user: self.user.render(),
       images: self.images.map{ |image| get_image_url(image.variant(:preview)) },
       gif: get_image_url(self.gif),
+      original_gif_url: self.original_gif_url,
       created_at: self.created_at,
       updated_at: self.updated_at
     }

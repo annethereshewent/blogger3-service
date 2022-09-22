@@ -19,7 +19,7 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   def create_post
     unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
-      post = Post.create(
+      post = Post.new(
         body:  html_escape(params[:body]),
         user_id: @user.id,
         repost_id: params[:repost_id],
@@ -27,7 +27,9 @@ class Api::V1::Users::DashboardController < ApplicationController
       )
 
       # finally process any gifs that may be in request
-      save_gif(post, params[:gif]) if !params[:gif].nil?
+      save_gif(post, params[:gif], params[:original_gif_url]) if !params[:gif].nil? && !params[:original_gif_url].nil?
+
+      post.save
 
       render json: {
         post: post.render()
@@ -100,10 +102,12 @@ class Api::V1::Users::DashboardController < ApplicationController
       params.permit(:body, :repost_id, :images)
     end
 
-    def save_gif(post, gif_url)
+    def save_gif(post, gif_url, original_gif_url)
       post.gif.attach(
         io: URI.parse(gif_url).open,
         filename: gif_url.split('/').last
       )
+
+      post.original_gif_url = original_gif_url
     end
 end

@@ -101,7 +101,7 @@ class Api::V1::Users::DashboardController < ApplicationController
     end
 
     def save_gif(post, gif_url)
-      post.gifs.attach(
+      post.gif.attach(
         io: URI.parse(gif_url).open,
         filename: gif_url.split('/').last
       )

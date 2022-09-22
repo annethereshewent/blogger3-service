@@ -18,7 +18,7 @@ class Api::V1::Users::DashboardController < ApplicationController
   end
 
   def create_post
-    unless params[:body].strip.empty?
+    unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
       post = Post.create(
         body:  html_escape(params[:body]),
         user_id: @user.id,

@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
         get '/posts' => 'dashboard#fetch_posts'
         post '/posts' => 'dashboard#create_post'
+
+        get '/search_gifs' => 'dashboard#search_gifs'
       end
 
       namespace :account do

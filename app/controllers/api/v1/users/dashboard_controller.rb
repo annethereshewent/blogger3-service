@@ -74,6 +74,20 @@ class Api::V1::Users::DashboardController < ApplicationController
     end
   end
 
+  def search_gifs
+    json = HTTParty.get("#{ENV["GIF_TENOR_BASE"]}/search", {
+        query: {
+          key: ENV["GIF_TENOR_API_KEY"],
+          q: params[:search_term],
+          media_filter: 'mp4,gif'
+        }
+      }
+    )
+
+    render json: json
+  end
+
+
   private
     def post_params
       params.permit(:body, :repost_id, :images)

@@ -7,7 +7,7 @@ C_NOT_FOUND = 404
 class Api::V1::Users::DashboardController < ApplicationController
   include ERB::Util
   include ImageHelpers
-  before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_blog_posts, :fetch_comments]
+  before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_user_posts, :fetch_comments, :fetch_posts_by_tag]
 
   def fetch_posts
     posts = @user.posts.includes(:tags).limit(20).order(updated_at: :desc)

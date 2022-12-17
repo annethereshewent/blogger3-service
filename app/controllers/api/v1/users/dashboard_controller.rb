@@ -10,7 +10,7 @@ class Api::V1::Users::DashboardController < ApplicationController
   before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_blog_posts, :fetch_comments]
 
   def fetch_posts
-    posts = @user.posts.limit(20).order(updated_at: :desc)
+    posts = @user.posts.includes(:tags).limit(20).order(updated_at: :desc)
 
     render json: {
       posts: posts.map(&:render)
@@ -31,6 +31,14 @@ class Api::V1::Users::DashboardController < ApplicationController
 
       post.save
 
+      if params[:tags].present?
+        params[:tags].each do |tag|
+          tag = Tag.find_by(tag: tag) || Tag.create(tag:tag)
+
+          PostTag.create(tag_id: tag.id, post_id: post.id)
+        end
+      end
+
       render json: {
         post: post.render()
       }
@@ -43,7 +51,7 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   end
 
-  def fetch_comments
+  def fetch_replies
 
   end
 

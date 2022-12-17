@@ -17,6 +17,24 @@ class Api::V1::Users::DashboardController < ApplicationController
     }
   end
 
+  def fetch_posts_by_tag
+    posts = Post.order('posts.id desc')
+      .includes(:tags)
+      .where(
+        'posts.id in (
+          select post_tags.post_id
+          from post_tags, tags
+          where post_tags.tag_id = tags.id and tags.tag = ?
+        )
+      ',
+      params[:tag]
+    )
+
+    render json: {
+      posts: posts.map(&:render)
+    }
+  end
+
   def create_post
     unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
       post = Post.new(

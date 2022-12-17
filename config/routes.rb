@@ -24,6 +24,8 @@ Rails.application.routes.draw do
         get '/posts' => 'dashboard#fetch_posts'
         post '/posts' => 'dashboard#create_post'
 
+        get '/tags/:tag' => 'dashboard#fetch_posts_by_tag'
+
         get '/search_gifs' => 'dashboard#search_gifs'
       end
 

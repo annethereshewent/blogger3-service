@@ -48,8 +48,7 @@ class Api::V1::Users::DashboardController < ApplicationController
       post = Post.new(
         body:  html_escape(params[:body]),
         user_id: @user.id,
-        repost_id: params[:repost_id],
-        images: params[:images]
+        repost_id: params[:repost_id]
       )
 
       # finally process any gifs that may be in request

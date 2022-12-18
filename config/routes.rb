@@ -27,6 +27,7 @@ Rails.application.routes.draw do
         get '/tags/:tag' => 'dashboard#fetch_posts_by_tag'
 
         get '/search_gifs' => 'dashboard#search_gifs'
+        post '/posts/:id/images' => 'dashboard#upload_images'
       end
 
       namespace :account do

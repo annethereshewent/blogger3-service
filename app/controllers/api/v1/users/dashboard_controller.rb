@@ -130,6 +130,14 @@ class Api::V1::Users::DashboardController < ApplicationController
     render json: json
   end
 
+  def upload_images
+    post = Post.find(params[:id])
+    post.images.attach(params[:files])
+
+    render json: {
+      post: post.render()
+    }
+  end
 
   private
     def post_params

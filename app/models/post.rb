@@ -16,7 +16,7 @@ class Post < ApplicationRecord
       id: self.id,
       body: self.body,
       user: self.user.render(),
-      images: self.images.map{ |image| image.variant(:preview).url },
+      images: self.images.map{ |image| image.url },
       tags: self.tags.map{ |tag| tag.tag },
       gif: self.gif.url,
       original_gif_url: self.original_gif_url,

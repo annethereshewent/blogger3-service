@@ -10,7 +10,13 @@ class Api::V1::Users::DashboardController < ApplicationController
   before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_user_posts, :fetch_comments, :fetch_posts_by_tag]
 
   def fetch_posts
-    posts = @user.posts.includes(:tags).limit(20).order(updated_at: :desc)
+    page = params[:page].present? ? params[:page] : 1
+
+    posts = @user
+      .posts
+      .paginate(page: page, per_page: 20)
+      .includes(:tags)
+      .order(updated_at: :desc)
 
     render json: {
       posts: posts.map(&:render)
@@ -18,7 +24,9 @@ class Api::V1::Users::DashboardController < ApplicationController
   end
 
   def fetch_posts_by_tag
+    page = params[:page].present? ? params[:page] : 1
     posts = Post.order('posts.id desc')
+      .paginate(page: page, per_page: 20)
       .includes(:tags)
       .where(
         'posts.id in (

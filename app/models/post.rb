@@ -11,6 +11,21 @@ class Post < ApplicationRecord
 
   has_one_attached :gif
 
+  def self.posts_by_tag(tag, page)
+    Post.order('posts.id desc')
+      .paginate(page: page, per_page: 20)
+      .includes(:tags)
+      .where(
+        'posts.id in (
+          select post_tags.post_id
+          from post_tags, tags
+          where post_tags.tag_id = tags.id and tags.tag = ?
+        )
+      ',
+      tag
+    )
+  end
+
   def render
     {
       id: self.id,

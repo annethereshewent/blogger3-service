@@ -25,18 +25,8 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   def fetch_posts_by_tag
     page = params[:page].present? ? params[:page] : 1
-    posts = Post.order('posts.id desc')
-      .paginate(page: page, per_page: 20)
-      .includes(:tags)
-      .where(
-        'posts.id in (
-          select post_tags.post_id
-          from post_tags, tags
-          where post_tags.tag_id = tags.id and tags.tag = ?
-        )
-      ',
-      params[:tag]
-    )
+
+    posts = Post.posts_by_tag(params[:tag], page)
 
     render json: {
       posts: posts.map(&:render)

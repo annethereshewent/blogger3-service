@@ -30,6 +30,9 @@ Rails.application.routes.draw do
         post '/posts/:id/images' => 'dashboard#upload_images'
 
         post '/posts/:id/likes' => 'dashboard#update_post_likes'
+
+        get '/profile/:username' => 'users#get_user_posts'
+        get '/user/:username' => 'users#get_user'
       end
 
       namespace :account do

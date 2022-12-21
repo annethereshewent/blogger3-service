@@ -12,11 +12,7 @@ class Api::V1::Users::DashboardController < ApplicationController
   def fetch_posts
     page = params[:page].present? ? params[:page] : 1
 
-    posts = @user
-      .posts
-      .paginate(page: page, per_page: 20)
-      .includes(:tags)
-      .order(updated_at: :desc)
+    posts = @user.ordered_posts(page)
 
     render json: {
       posts: posts.map(&:render)

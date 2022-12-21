@@ -30,19 +30,28 @@ class User < ApplicationRecord
     dependent: :delete_all # or :destroy if you need callbacks
 
   def render
+
     {
       email: self.email,
       username: self.username,
       description: self.description,
       avatars: {
-        large: self.avatar.variant(:large).url,
-        medium: self.avatar.variant(:medium).url,
-        small: self.avatar.variant(:small).url,
-        thumb: self.avatar.variant(:thumb).url,
+        large: self.avatar.variant(:large)&.processed&.url,
+        medium: self.avatar.variant(:medium)&.processed&.url,
+        small: self.avatar.variant(:small)&.processed&.url,
+        thumb: self.avatar.variant(:thumb)&.processed&.url,
       },
       gender: self.gender,
       confirmed_at: self.confirmed_at,
       avatar_dialog: self.avatar_dialog
     }
+  end
+
+  def ordered_posts(page)
+    self
+      .posts
+      .paginate(page: page, per_page: 20)
+      .includes(:tags)
+      .order(updated_at: :desc)
   end
 end

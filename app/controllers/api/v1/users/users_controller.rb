@@ -1,7 +1,7 @@
 class Api::V1::Users::UsersController < ApplicationController
   include ImageHelpers
 
-  before_action :doorkeeper_authorize!, :current_resource_owner, except: [:confirmation_status, :user_exists, :email_exists]
+  before_action :doorkeeper_authorize!, :current_resource_owner, except: [:confirmation_status, :user_exists, :get_user, :get_user_posts, :email_exists]
   def confirmation_status
     user = User.find(params[:id])
 
@@ -39,7 +39,25 @@ class Api::V1::Users::UsersController < ApplicationController
     @user.save
 
     render json: {
-      user: @user.render()
+      user: @user.render
+    }
+  end
+
+  def get_user_posts
+    page = params[:page].present? ? params[:page] : 1
+
+    user = User.find_by(username: params[:username])
+
+    render json: {
+      posts: user.ordered_posts(page).map(&:render)
+    }
+  end
+
+  def get_user
+    user = User.find_by(username: params[:username])
+
+    render json: {
+      user: user.render
     }
   end
 

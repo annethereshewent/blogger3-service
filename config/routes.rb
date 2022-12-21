@@ -28,6 +28,8 @@ Rails.application.routes.draw do
 
         get '/search_gifs' => 'dashboard#search_gifs'
         post '/posts/:id/images' => 'dashboard#upload_images'
+
+        post '/posts/:id/likes' => 'dashboard#update_post_likes'
       end
 
       namespace :account do

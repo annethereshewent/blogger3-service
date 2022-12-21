@@ -33,6 +33,22 @@ class Api::V1::Users::DashboardController < ApplicationController
     }
   end
 
+  def update_post_likes
+    post = Post.find(params[:id])
+
+    like = Like.find_by(post_id: params[:id], user_id: @user.id)
+
+    if like.present?
+      like.destroy
+    else
+      Like.create(user_id: @user.id, post_id: post.id)
+    end
+
+    render json: {
+      post: post.render()
+    }
+  end
+
   def create_post
     unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
       post = Post.new(

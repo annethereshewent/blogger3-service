@@ -17,6 +17,7 @@ class User < ApplicationRecord
   end
 
   has_many :posts
+  has_many :likes
 
   has_many :access_grants,
     class_name: 'Doorkeeper::AccessGrant',

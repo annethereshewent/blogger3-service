@@ -4,6 +4,7 @@ class Post < ApplicationRecord
   belongs_to :user
   has_many :post_tags
   has_many :tags, through: :post_tags
+  has_many :likes
 
   has_many_attached :images do |attachable|
     attachable.variant :preview, resize_to_limit: [400, nil]
@@ -33,6 +34,8 @@ class Post < ApplicationRecord
       user: self.user.render(),
       images: self.images.map{ |image| image.url },
       tags: self.tags.map{ |tag| tag.tag },
+      like_count: likes.count,
+      likes: likes.map(&:render),
       gif: self.gif.url,
       original_gif_url: self.original_gif_url,
       created_at: self.created_at,

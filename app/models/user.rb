@@ -45,7 +45,9 @@ class User < ApplicationRecord
       },
       gender: self.gender,
       confirmed_at: self.confirmed_at,
-      avatar_dialog: self.avatar_dialog
+      avatar_dialog: self.avatar_dialog,
+      banner: self.banner.variants(:default)&.processed&.url,
+      join_date: self.created_at
     }
   end
 

@@ -12,7 +12,7 @@ class Api::V1::Users::DashboardController < ApplicationController
   def fetch_posts
     page = params[:page].present? ? params[:page] : 1
 
-    posts = @user.ordered_posts(page)
+    posts = Post.dashboard_posts(page, [@user.id] + @user.followees.map(&:id))
 
     render json: {
       posts: posts.map(&:render)

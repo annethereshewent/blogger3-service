@@ -73,6 +73,22 @@ class Api::V1::Users::UsersController < ApplicationController
     }
   end
 
+  def follow_user
+    followee = User.find_by(username: params[:username])
+
+    if followee.present?
+      Follow.create(follower_id: @user.id, followee_id: followee.id)
+    end
+
+    @user.reload
+    followee.reload
+
+    render json: {
+      user: @user.render,
+      followee: followee.render
+    }
+  end
+
   def save_banner
     decoded_image = decode_base64_image(params[:banner_url])
     content_type = get_content_type(params[:banner_url])

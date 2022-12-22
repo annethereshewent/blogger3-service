@@ -45,4 +45,12 @@ class Post < ApplicationRecord
       updated_at: self.updated_at
     }
   end
+
+   def self.dashboard_posts(page, user_ids)
+    Post
+      .paginate(page: page, per_page: 20)
+      .includes(:tags)
+      .where(user_id: user_ids)
+      .order(updated_at: :desc)
+  end
 end

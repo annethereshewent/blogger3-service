@@ -35,6 +35,8 @@ Rails.application.routes.draw do
         get '/user/:username' => 'users#get_user'
         post '/profile' => 'users#save_details'
         post '/profile/banner' => 'users#save_banner'
+
+        post '/user/:username/follow' => 'users#follow_user'
       end
     end
   end

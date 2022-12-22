@@ -34,7 +34,9 @@ class User < ApplicationRecord
     {
       email: self.email,
       username: self.username,
+      display_name: self.display_name,
       description: self.description,
+      post_count: self.posts.count,
       avatars: {
         large: self.avatar.variant(:large)&.processed&.url,
         medium: self.avatar.variant(:medium)&.processed&.url,

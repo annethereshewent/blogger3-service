@@ -3,6 +3,8 @@ class Api::V1::Auth::AuthController < ApplicationController
   def register
     user = User.new(user_params)
 
+    user.display_name = user.username
+
     if (user.save)
       render json: {
         user: user.render()

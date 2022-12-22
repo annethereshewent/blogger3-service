@@ -13,7 +13,7 @@ class User < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [50,50]
   end
   has_one_attached :banner do |attachable|
-    attachable.variant :default, resize_to_limit: [1500,500]
+    attachable.variant :default, resize_to_limit: [700,200]
   end
 
   has_many :posts
@@ -46,7 +46,7 @@ class User < ApplicationRecord
       gender: self.gender,
       confirmed_at: self.confirmed_at,
       avatar_dialog: self.avatar_dialog,
-      banner: self.banner.variants(:default)&.processed&.url,
+      banner: self.banner.variant(:default)&.processed&.url,
       join_date: self.created_at
     }
   end

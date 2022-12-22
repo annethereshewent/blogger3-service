@@ -62,21 +62,31 @@ class Api::V1::Users::UsersController < ApplicationController
   end
 
   def save_details
-    user = User.find_by(username: params[:username])
+    @user.gender = params[:gender]
+    @user.description = params[:description]
+    @user.display_name = params[:display_name]
 
-    user.gender = params[:gender]
-    user.description = params[:description]
-    user.display_name = params[:display_name]
-
-    user.save
+    @user.save
 
     render json: {
-      user: user.render
+      user: @user.render
     }
   end
 
-  private
-    def user_params
-      params.permit(:description, :display_name, :gender)
-    end
+  def save_banner
+    decoded_image = decode_base64_image(params[:banner_url])
+    content_type = get_content_type(params[:banner_url])
+
+    @user.banner = {
+      io: decoded_image,
+      content_type: content_type,
+      filename: "#{random_string}.#{content_type.split('/')[1]}"
+    }
+
+    @user.save
+
+    render json: {
+      user: @user.render
+    }
+  end
 end

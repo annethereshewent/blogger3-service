@@ -33,11 +33,8 @@ Rails.application.routes.draw do
 
         get '/profile/:username' => 'users#get_user_posts'
         get '/user/:username' => 'users#get_user'
-        post '/profile/:username' => 'users#save_details'
-      end
-
-      namespace :account do
-        use_doorkeeper
+        post '/profile' => 'users#save_details'
+        post '/profile/banner' => 'users#save_banner'
       end
     end
   end

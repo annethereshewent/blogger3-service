@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
         get '/profile/:username' => 'users#get_user_posts'
         get '/user/:username' => 'users#get_user'
+        post '/profile/:username' => 'users#save_details'
       end
 
       namespace :account do

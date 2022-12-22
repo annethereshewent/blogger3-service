@@ -61,14 +61,22 @@ class Api::V1::Users::UsersController < ApplicationController
     }
   end
 
-  def current_resource_owner
-    if doorkeeper_token
-      @user = User.find(doorkeeper_token.resource_owner_id)
-    else
-      render json: {
-        message: 'user not found',
-        code: C_NOT_FOUND
-      }, status: 404
-    end
+  def save_details
+    user = User.find_by(username: params[:username])
+
+    user.gender = params[:gender]
+    user.description = params[:description]
+    user.display_name = params[:display_name]
+
+    user.save
+
+    render json: {
+      user: user.render
+    }
   end
+
+  private
+    def user_params
+      params.permit(:description, :display_name, :gender)
+    end
 end

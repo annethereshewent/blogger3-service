@@ -78,6 +78,10 @@ class Api::V1::Users::UsersController < ApplicationController
     @user.description = params[:description]
     @user.display_name = params[:display_name]
 
+    if params[:banner] == ''
+      @user.banner.purge
+    end
+
     @user.save
 
     render json: {

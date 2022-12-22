@@ -32,7 +32,10 @@ class Post < ApplicationRecord
       id: self.id,
       body: self.body,
       user: self.user.render(),
-      images: self.images.map{ |image| image.url },
+      images: self.images.map{ |image| {
+        original: image.url,
+        preview: image.variant(:preview).processed.url
+      } },
       tags: self.tags.map{ |tag| tag.tag },
       like_count: likes.count,
       likes: likes.map(&:render),

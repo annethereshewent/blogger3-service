@@ -38,6 +38,8 @@ class Api::V1::Users::DashboardController < ApplicationController
       like.destroy
     else
       Like.create(user_id: @user.id, post_id: post.id)
+
+       post.touch
     end
 
     render json: {

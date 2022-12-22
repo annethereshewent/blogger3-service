@@ -37,6 +37,7 @@ Rails.application.routes.draw do
         post '/profile/banner' => 'users#save_banner'
 
         post '/user/:username/follow' => 'users#follow_user'
+        delete '/user/:username/follow' => 'users#unfollow_user'
       end
     end
   end

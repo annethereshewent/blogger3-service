@@ -55,9 +55,21 @@ class Api::V1::Users::UsersController < ApplicationController
 
   def get_user
     user = User.find_by(username: params[:username])
+    if request.headers["Authorization"].include? "Bearer"
+      doorkeeper_authorize!
+
+      is_following = Follow.find_by(followee_id: user.id, follower_id: current_resource_owner.id).present?
+      is_followed = Follow.find_by(follower_id: user.id, followee_id: current_resource_owner.id).present?
+    else
+      is_following = false
+      is_followed = false
+    end
+
 
     render json: {
-      user: user.render
+      user: user.render,
+      is_following: is_following,
+      is_followed: is_followed
     }
   end
 
@@ -78,6 +90,23 @@ class Api::V1::Users::UsersController < ApplicationController
 
     if followee.present?
       Follow.create(follower_id: @user.id, followee_id: followee.id)
+    end
+
+    @user.reload
+    followee.reload
+
+    render json: {
+      user: @user.render,
+      followee: followee.render
+    }
+  end
+
+  def unfollow_user
+    followee = User.find_by(username: params[:username])
+
+    if followee.present?
+      follow = Follow.find_by(follower_id: @user.id, followee_id: followee.id)
+      follow.destroy
     end
 
     @user.reload

@@ -13,6 +13,12 @@ amazon_dev:
   region: "us-west-2"
   bucket: "blogger3.dev"
 
+amazon_staging:
+  service: S3
+  access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+  secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+  region: "us-west-2"
+  bucket: "blogger3.staging"
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
 #   service: S3

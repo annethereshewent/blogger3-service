@@ -55,7 +55,7 @@ class Api::V1::Users::UsersController < ApplicationController
 
   def get_user
     user = User.find_by(username: params[:username])
-    if request.headers["Authorization"].include? "Bearer"
+    if request.headers["Authorization"]&.include? "Bearer"
       doorkeeper_authorize!
 
       is_following = Follow.find_by(followee_id: user.id, follower_id: current_resource_owner.id).present?

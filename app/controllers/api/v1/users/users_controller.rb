@@ -102,6 +102,34 @@ class Api::V1::Users::UsersController < ApplicationController
     }
   end
 
+  def search_users
+    users = User.where("username like ? or display_name like ?", "%#{params[:query]}%","%#{params[:query]}%")
+
+    if request.headers["Authorization"]&.include? "Bearer"
+      doorkeeper_authorize!
+
+      received_follows = @user.received_follows.pluck('follower_id')
+      given_follows = @user.given_follows.pluck('followee_id')
+    else
+      received_follows = []
+      given_follows = []
+    end
+
+    render json: {
+      users: users.map do |user|
+        puts received_follows.inspect
+        puts given_follows.inspect
+        {
+          username: user.username,
+          display_name: user.display_name,
+          avatar: user.avatar.variant(:medium)&.processed&.url,
+          is_following: received_follows.include?(user.id),
+          is_followed: given_follows.include?(user.id)
+        }
+      end
+    }
+  end
+
   def follow_user
     followee = User.find_by(username: params[:username])
 

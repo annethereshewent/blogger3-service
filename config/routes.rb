@@ -38,6 +38,9 @@ Rails.application.routes.draw do
 
         post '/user/:username/follow' => 'users#follow_user'
         delete '/user/:username/follow' => 'users#unfollow_user'
+
+        get '/search_users' => 'users#search_users'
+        get '/search' => 'dashboard#search_posts'
       end
     end
   end

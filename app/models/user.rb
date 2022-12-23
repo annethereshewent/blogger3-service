@@ -73,6 +73,6 @@ class User < ApplicationRecord
       .posts
       .paginate(page: page, per_page: 20)
       .includes(:tags)
-      .order(updated_at: :desc)
+      .order(created_at: :desc)
   end
 end

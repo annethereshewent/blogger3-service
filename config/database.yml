@@ -3,3 +3,12 @@ development:
   encoding: unicode
   database: blogger3
   pool: 5
+
+staging:
+  adapter: postgresql
+  encoding: unicode
+  database: blogger3
+  username: <%= ENV['POSTGRES_USERNAME'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: <%= ENV['POSTGRES_HOST'] %>
+  port: 5432

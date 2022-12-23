@@ -10,6 +10,6 @@ production:
   database: blogger3
   username: <%= ENV['POSTGRES_USERNAME'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
-  host: <%= ENV['POSTGRES_HOST'] %>
+  url: <%= ENV['POSTGRES_HOST'] %>
   port: 5432
 

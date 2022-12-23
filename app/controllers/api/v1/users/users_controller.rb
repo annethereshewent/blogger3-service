@@ -78,8 +78,21 @@ class Api::V1::Users::UsersController < ApplicationController
     @user.description = params[:description]
     @user.display_name = params[:display_name]
 
-    if params[:banner] == ''
-      @user.banner.purge
+    if !params[:banner].nil?
+      if params[:banner] == ''
+        @user.banner.purge
+      else
+        @user.banner = image_props(params[:banner])
+      end
+    end
+
+
+    if !params[:avatar].nil?
+      if params[:avatar] == ''
+        @user.avatar.purge
+      else
+        @user.avatar = image_props(params[:avatar])
+      end
     end
 
     @user.save
@@ -122,20 +135,14 @@ class Api::V1::Users::UsersController < ApplicationController
     }
   end
 
-  def save_banner
-    decoded_image = decode_base64_image(params[:banner_url])
-    content_type = get_content_type(params[:banner_url])
+  def image_props image_url
+    decoded_image = decode_base64_image(image_url)
+    content_type = get_content_type(image_url)
 
-    @user.banner = {
+    {
       io: decoded_image,
       content_type: content_type,
       filename: "#{random_string}.#{content_type.split('/')[1]}"
-    }
-
-    @user.save
-
-    render json: {
-      user: @user.render
     }
   end
 end

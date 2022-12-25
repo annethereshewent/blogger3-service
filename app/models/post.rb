@@ -6,6 +6,8 @@ class Post < ApplicationRecord
   has_many :tags, through: :post_tags
   has_many :likes
 
+  has_many :replies, as: :replyable
+
   has_many_attached :images do |attachable|
     attachable.variant :preview, resize_to_limit: [400, nil]
   end

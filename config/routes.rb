@@ -41,6 +41,9 @@ Rails.application.routes.draw do
 
         get '/search_users' => 'users#search_users'
         get '/search' => 'dashboard#search_posts'
+
+        post '/replies' => 'replies#create'
+        get '/posts/:id' => 'posts#index'
       end
     end
   end

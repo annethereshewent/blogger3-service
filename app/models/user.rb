@@ -71,6 +71,7 @@ class User < ApplicationRecord
   def ordered_posts(page)
     self
       .posts
+      .includes(:tags)
       .paginate(page: page, per_page: 20)
       .includes(:tags)
       .order(created_at: :desc)

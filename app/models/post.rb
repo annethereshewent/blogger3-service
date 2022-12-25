@@ -41,6 +41,7 @@ class Post < ApplicationRecord
       tags: self.tags.map{ |tag| tag.tag },
       like_count: likes.count,
       likes: likes.map(&:render),
+      reply_count: replies.count,
       gif: self.gif.url,
       original_gif_url: self.original_gif_url,
       created_at: self.created_at,

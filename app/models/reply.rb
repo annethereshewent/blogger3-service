@@ -3,12 +3,10 @@ class Reply < ApplicationRecord
 
   has_many :replies, as: :replyable
 
-  def reply
+  def render
     {
-      body: body,
-      replies: replies.map(&:render)
-      replyable: replyable,
-      replyable_type: replyable_type
+      id: id,
+      body: body
     }
   end
 end

@@ -29,6 +29,13 @@ class Post < ApplicationRecord
     )
   end
 
+  def ordered_replies(page)
+    replies
+      .includes(:likes)
+      .order(created_at: :asc)
+      .paginate(page: page, per_page: 20)
+  end
+
   def render
     {
       id: self.id,

@@ -3,6 +3,18 @@ C_REPLY_BODY_EMPTY=201
 class Api::V1::Users::RepliesController < ApplicationController
   before_action :doorkeeper_authorize!, :current_resource_owner
 
+
+  def index
+    page = params[:page].present? ? params[:page] : 1
+
+    replies = Reply
+      .replyable_replies(replyable_id: params[:id], replyable_type: params[:replyable_type], page: page)
+
+    render json: {
+      replies: replies.map(&:render)
+    }
+  end
+
   def create
     unless params[:body].strip.empty?
       sanitized_body = ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"])

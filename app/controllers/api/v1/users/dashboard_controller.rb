@@ -49,8 +49,10 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   def create_post
     unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
+      sanitized_body = ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"])
+
       post = Post.new(
-        body:  ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"]),
+        body:  sanitized_body,
         user_id: @user.id,
         repost_id: params[:repost_id]
       )

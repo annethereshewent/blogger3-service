@@ -32,12 +32,12 @@ class Api::V1::Users::DashboardController < ApplicationController
   def update_post_likes
     post = Post.find(params[:id])
 
-    like = Like.find_by(post_id: params[:id], user_id: @user.id)
+    like = Like.find_by(likeable_id: params[:id], likeable_type: 'Post', user_id: @user.id)
 
     if like.present?
       like.destroy
     else
-      Like.create(user_id: @user.id, post_id: post.id)
+      Like.create(user_id: @user.id, likeable_id: post.id, likeable_type: 'Post')
 
        post.touch
     end

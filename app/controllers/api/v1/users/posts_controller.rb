@@ -6,7 +6,11 @@ class Api::V1::Users::PostsController < ApplicationController
 
     render json: {
       post: post.render,
-      replies: post.replies.map(&:render)
+      replies: post
+        .replies
+        .includes(:likes)
+        .order(created_at: :asc)
+        .map(&:render)
     }
   end
 end

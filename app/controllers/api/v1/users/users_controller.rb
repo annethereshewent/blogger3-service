@@ -117,8 +117,6 @@ class Api::V1::Users::UsersController < ApplicationController
 
     render json: {
       users: users.map do |user|
-        puts received_follows.inspect
-        puts given_follows.inspect
         {
           username: user.username,
           display_name: user.display_name,

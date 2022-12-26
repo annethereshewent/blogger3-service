@@ -44,6 +44,8 @@ Rails.application.routes.draw do
 
         post '/replies' => 'replies#create'
         get '/posts/:id' => 'posts#index'
+
+        post '/replies/:id/likes' => 'replies#update_reply_likes'
       end
     end
   end

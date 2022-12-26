@@ -26,4 +26,24 @@ class Api::V1::Users::RepliesController < ApplicationController
       }, status: 400
     end
   end
+
+  def update_reply_likes
+    reply = Reply.find(params[:id])
+
+    like = Like.find_by(likeable_id: params[:id], likeable_type: 'Reply', user_id: @user.id)
+
+    if like.present?
+      like.destroy
+    else
+      Like.create(user_id: @user.id, likeable_id: reply.id, likeable_type: 'Reply')
+
+      # update both the reply and the reply's parent's updated at
+       reply.touch
+       reply.replyable.touch
+    end
+
+    render json: {
+      reply: reply.render()
+    }
+  end
 end

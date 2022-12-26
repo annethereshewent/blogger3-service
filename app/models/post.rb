@@ -38,21 +38,21 @@ class Post < ApplicationRecord
 
   def render
     {
-      id: self.id,
-      body: self.body,
-      user: self.user.render(),
-      images: self.images.map{ |image| {
+      id: id,
+      body: body,
+      user: user.render(),
+      images: images.map{ |image| {
         original: image.url,
         preview: image.variant(:preview).processed.url
       } },
-      tags: self.tags.map{ |tag| tag.tag },
+      tags: tags.map{ |tag| tag.tag },
       like_count: likes.count,
       likes: likes.map(&:render),
       reply_count: replies.count,
-      gif: self.gif.url,
-      original_gif_url: self.original_gif_url,
-      created_at: self.created_at,
-      updated_at: self.updated_at
+      gif: gif.url,
+      original_gif_url: original_gif_url,
+      created_at: created_at,
+      updated_at: updated_at
     }
   end
 

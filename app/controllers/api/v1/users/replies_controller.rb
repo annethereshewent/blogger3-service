@@ -16,17 +16,23 @@ class Api::V1::Users::RepliesController < ApplicationController
   end
 
   def create
-    unless params[:body].strip.empty?
+    unless params[:body].strip.empty? && params[:gif].nil? && !params[:images]
       sanitized_body = ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"])
 
-      reply = Reply.create!(
+      reply = Reply.new(
         body: sanitized_body,
         replyable_id: params[:replyable_id],
         replyable_type: params[:replyable_type],
         user_id: @user.id
       )
 
+      # finally process any gifs that may be in request
+      save_gif(reply, params[:gif], params[:original_gif_url]) if !params[:gif].nil? && !params[:original_gif_url].nil?
+
+      reply.save!
+
       reply.replyable.touch
+
 
       render json: {
         reply: reply.render
@@ -37,6 +43,15 @@ class Api::V1::Users::RepliesController < ApplicationController
         code: C_REPLY_BODY_EMPTY
       }, status: 400
     end
+  end
+
+  def upload_images
+    reply = Reply.find(params[:id])
+    reply.images.attach(params[:files])
+
+    render json: {
+      reply: reply.render()
+    }
   end
 
   def update_reply_likes

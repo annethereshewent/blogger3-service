@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_26_005629) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_26_045024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -130,6 +130,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_005629) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "original_gif_url"
     t.index ["replyable_type", "replyable_id"], name: "index_replies_on_replyable"
     t.index ["user_id"], name: "index_replies_on_user_id"
   end

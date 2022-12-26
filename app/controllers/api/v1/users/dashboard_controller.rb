@@ -137,13 +137,4 @@ class Api::V1::Users::DashboardController < ApplicationController
     def post_params
       params.permit(:body, :repost_id, :images)
     end
-
-    def save_gif(post, gif_url, original_gif_url)
-      post.gif.attach(
-        io: URI.parse(gif_url).open,
-        filename: gif_url.split('/').last
-      )
-
-      post.original_gif_url = original_gif_url
-    end
 end

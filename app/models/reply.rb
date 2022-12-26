@@ -16,14 +16,17 @@ class Reply < ApplicationRecord
       id: id,
       body: body,
       user: user.render,
-      created_at: created_at,
       likes: likes.map(&:render),
       like_count: likes.count,
       reply_count: replies.count,
       images: images.map{ |image| {
         original: image.url,
         preview: image.variant(:preview).processed.url
-      } }
+      } },
+      gif: gif.url,
+      original_gif_url: original_gif_url,
+      created_at: created_at,
+      updated_at: updated_at
     }
   end
 

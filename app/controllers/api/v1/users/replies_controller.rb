@@ -7,12 +7,14 @@ class Api::V1::Users::RepliesController < ApplicationController
     unless params[:body].strip.empty?
       sanitized_body = ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"])
 
-      reply = Reply.create(
+      reply = Reply.create!(
         body: sanitized_body,
         replyable_id: params[:replyable_id],
         replyable_type: params[:replyable_type],
         user_id: @user.id
       )
+
+      reply.replyable.touch
 
       render json: {
         reply: reply.render

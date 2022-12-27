@@ -26,7 +26,8 @@ class Reply < ApplicationRecord
       gif: gif.url,
       original_gif_url: original_gif_url,
       created_at: created_at,
-      updated_at: updated_at
+      updated_at: updated_at,
+      is_reply: true
     }
   end
 

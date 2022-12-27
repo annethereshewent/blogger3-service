@@ -1,7 +1,7 @@
 C_REPLY_BODY_EMPTY=201
 
 class Api::V1::Users::RepliesController < ApplicationController
-  before_action :doorkeeper_authorize!, :current_resource_owner
+  before_action :doorkeeper_authorize!, :current_resource_owner, except: %i[index]
 
 
   def index

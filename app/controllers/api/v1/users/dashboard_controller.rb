@@ -51,8 +51,6 @@ class Api::V1::Users::DashboardController < ApplicationController
     unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
       sanitized_body = ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"])
 
-      puts "THE REPLY ID IS EQUAL TO #{params[:reply_id]}"
-
       post = Post.new(
         body:  sanitized_body,
         user_id: @user.id
@@ -78,6 +76,8 @@ class Api::V1::Users::DashboardController < ApplicationController
           PostTag.create(tag_id: tag.id, post_id: post.id)
         end
       end
+
+      post.replyable&.touch
 
       render json: {
         post: post.render,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_26_045024) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_29_062401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,13 +53,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_045024) do
 
   create_table "likes", force: :cascade do |t|
     t.bigint "user_id"
-    t.bigint "likeable_id"
+    t.bigint "post_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "likeable_type", default: "Post", null: false
-    t.index ["likeable_id", "likeable_type"], name: "index_likes_on_likeable_id_and_likeable_type"
-    t.index ["likeable_id"], name: "index_likes_on_likeable_id"
-    t.index ["user_id", "likeable_id"], name: "index_likes_on_user_id_and_likeable_id", unique: true
+    t.index ["post_id"], name: "index_likes_on_post_id"
+    t.index ["user_id", "post_id"], name: "index_likes_on_user_id_and_post_id", unique: true
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
@@ -119,20 +117,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_045024) do
     t.bigint "repost_id"
     t.bigint "user_id"
     t.string "original_gif_url"
+    t.bigint "reply_id"
+    t.index ["reply_id"], name: "index_posts_on_reply_id"
     t.index ["repost_id"], name: "index_posts_on_repost_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
-  end
-
-  create_table "replies", force: :cascade do |t|
-    t.string "body"
-    t.string "replyable_type"
-    t.bigint "replyable_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.string "original_gif_url"
-    t.index ["replyable_type", "replyable_id"], name: "index_replies_on_replyable"
-    t.index ["user_id"], name: "index_replies_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -173,10 +161,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_045024) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "follows", "users", column: "followee_id"
   add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "likes", "posts"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "posts", "posts", column: "reply_id"
   add_foreign_key "posts", "posts", column: "repost_id"
   add_foreign_key "posts", "users"
 end

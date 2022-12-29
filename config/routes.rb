@@ -42,13 +42,9 @@ Rails.application.routes.draw do
         get '/search_users' => 'users#search_users'
         get '/search' => 'dashboard#search_posts'
 
-        post '/replies' => 'replies#create'
         get '/posts/:id' => 'posts#index'
 
-        post '/replies/:id/likes' => 'replies#update_reply_likes'
-        get '/replies/:id' => 'replies#index'
-
-        post '/replies/:id/images' => 'replies#upload_images'
+        get '/replies/:id' => 'posts#replies'
       end
     end
   end

@@ -4,9 +4,13 @@ class Post < ApplicationRecord
   belongs_to :user
   has_many :post_tags
   has_many :tags, through: :post_tags
-  has_many :likes, as: :likeable
+  has_many :likes
 
-  has_many :replies, as: :replyable
+  has_many :replies, class_name: 'Post', foreign_key: 'reply_id'
+  belongs_to :replyable, class_name: 'Post', foreign_key: 'reply_id', optional: true
+
+  has_many :reposts, class_name: 'Post', foreign_key: 'repost_id'
+  belongs_to :repostable, class_name: 'Post', foreign_key: 'repost_id', optional: true
 
   has_many_attached :images do |attachable|
     attachable.variant :preview, resize_to_limit: [400, nil]
@@ -29,10 +33,19 @@ class Post < ApplicationRecord
     )
   end
 
+  def self.replyable_replies(replyable_id:, page:)
+    Post
+      .includes(:likes)
+      .where(reply_id: replyable_id)
+      .order(created_at: :asc)
+      .paginate(page: page, per_page: 20)
+  end
+
   def ordered_replies(page)
-    replies
+    self
       .includes(:likes)
       .order(created_at: :asc)
+      .where(reply_id: id)
       .paginate(page: page, per_page: 20)
   end
 
@@ -53,7 +66,7 @@ class Post < ApplicationRecord
       original_gif_url: original_gif_url,
       created_at: created_at,
       updated_at: updated_at,
-      is_reply: false
+      is_reply: reply_id != nil
     }
   end
 

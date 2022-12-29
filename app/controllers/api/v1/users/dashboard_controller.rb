@@ -32,12 +32,12 @@ class Api::V1::Users::DashboardController < ApplicationController
   def update_post_likes
     post = Post.find(params[:id])
 
-    like = Like.find_by(likeable_id: params[:id], likeable_type: 'Post', user_id: @user.id)
+    like = Like.find_by(post_id: params[:id], user_id: @user.id)
 
     if like.present?
       like.destroy
     else
-      Like.create(user_id: @user.id, likeable_id: post.id, likeable_type: 'Post')
+      Like.create(user_id: @user.id, post_id: post.id)
 
        post.touch
     end
@@ -51,16 +51,25 @@ class Api::V1::Users::DashboardController < ApplicationController
     unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
       sanitized_body = ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"])
 
+      puts "THE REPLY ID IS EQUAL TO #{params[:reply_id]}"
+
       post = Post.new(
         body:  sanitized_body,
-        user_id: @user.id,
-        repost_id: params[:repost_id]
+        user_id: @user.id
       )
+
+      if params[:reply_id].present?
+        post.reply_id = params[:reply_id]
+      end
+
+      if params[:repost_id].present?
+        post.repost_id = params[:repost_id]
+      end
 
       # finally process any gifs that may be in request
       save_gif(post, params[:gif], params[:original_gif_url]) if !params[:gif].nil? && !params[:original_gif_url].nil?
 
-      post.save
+      post.save!
 
       if params[:tags].present?
         params[:tags].each do |tag|
@@ -71,7 +80,8 @@ class Api::V1::Users::DashboardController < ApplicationController
       end
 
       render json: {
-        post: post.render()
+        post: post.render,
+        replyable: post.replyable&.render
       }
     else
       render json: {

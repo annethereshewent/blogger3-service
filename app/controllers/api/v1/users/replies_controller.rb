@@ -35,7 +35,8 @@ class Api::V1::Users::RepliesController < ApplicationController
 
 
       render json: {
-        reply: reply.render
+        reply: reply.render,
+        replyable: reply.replyable.render
       }
     else
       render json: {
@@ -70,7 +71,7 @@ class Api::V1::Users::RepliesController < ApplicationController
     end
 
     render json: {
-      reply: reply.render()
+      reply: reply.render
     }
   end
 end

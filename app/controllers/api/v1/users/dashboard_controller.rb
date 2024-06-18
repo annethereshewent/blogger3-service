@@ -7,7 +7,7 @@ C_NOT_FOUND = 404
 class Api::V1::Users::DashboardController < ApplicationController
   include ERB::Util
   include ImageHelpers
-  before_action :doorkeeper_authorize!, :current_resource_owner, except: [:fetch_user_posts, :fetch_comments, :fetch_posts_by_tag]
+  before_action :doorkeeper_authorize!, :current_resource_owner, except: %i[fetch_user_posts fetch_comments fetch_posts_by_tag]
 
   def fetch_posts
     page = params[:page].present? ? params[:page] : 1
@@ -49,16 +49,25 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   def create_post
     unless params[:body].strip.empty? && params[:gif].nil? && params[:images].nil?
+      sanitized_body = ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"])
+
       post = Post.new(
-        body:  ActionController::Base.helpers.sanitize(params[:body], tags: ["img", "br", "div"], attributes: ["src", "class"]),
-        user_id: @user.id,
-        repost_id: params[:repost_id]
+        body:  sanitized_body,
+        user_id: @user.id
       )
+
+      if params[:reply_id].present?
+        post.reply_id = params[:reply_id]
+      end
+
+      if params[:repost_id].present?
+        post.repost_id = params[:repost_id]
+      end
 
       # finally process any gifs that may be in request
       save_gif(post, params[:gif], params[:original_gif_url]) if !params[:gif].nil? && !params[:original_gif_url].nil?
 
-      post.save
+      post.save!
 
       if params[:tags].present?
         params[:tags].each do |tag|
@@ -68,8 +77,11 @@ class Api::V1::Users::DashboardController < ApplicationController
         end
       end
 
+      post.replyable&.touch
+
       render json: {
-        post: post.render()
+        post: post.render,
+        replyable: post.replyable&.render
       }
     else
       render json: {
@@ -134,14 +146,5 @@ class Api::V1::Users::DashboardController < ApplicationController
   private
     def post_params
       params.permit(:body, :repost_id, :images)
-    end
-
-    def save_gif(post, gif_url, original_gif_url)
-      post.gif.attach(
-        io: URI.parse(gif_url).open,
-        filename: gif_url.split('/').last
-      )
-
-      post.original_gif_url = original_gif_url
     end
 end

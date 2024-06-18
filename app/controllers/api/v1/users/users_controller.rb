@@ -36,7 +36,7 @@ class Api::V1::Users::UsersController < ApplicationController
       filename: "#{random_string}.#{content_type.split('/')[1]}"
     }
 
-    @user.save
+    @user.save!
 
     render json: {
       user: @user.render
@@ -95,7 +95,7 @@ class Api::V1::Users::UsersController < ApplicationController
       end
     end
 
-    @user.save
+    @user.save!
 
     render json: {
       user: @user.render
@@ -117,8 +117,6 @@ class Api::V1::Users::UsersController < ApplicationController
 
     render json: {
       users: users.map do |user|
-        puts received_follows.inspect
-        puts given_follows.inspect
         {
           username: user.username,
           display_name: user.display_name,
@@ -134,7 +132,7 @@ class Api::V1::Users::UsersController < ApplicationController
     followee = User.find_by(username: params[:username])
 
     if followee.present?
-      Follow.create(follower_id: @user.id, followee_id: followee.id)
+      Follow.create!(follower_id: @user.id, followee_id: followee.id)
     end
 
     @user.reload

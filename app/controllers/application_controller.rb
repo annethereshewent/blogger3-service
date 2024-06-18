@@ -12,4 +12,14 @@ class ApplicationController < ActionController::API
       }, status: 404
     end
   end
+
+  protected
+    def save_gif(gifable, gif_url, original_gif_url)
+      gifable.gif.attach(
+        io: URI.parse(gif_url).open,
+        filename: gif_url.split('/').last
+      )
+
+      gifable.original_gif_url = original_gif_url
+    end
 end

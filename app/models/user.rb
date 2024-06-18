@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many :likes
   has_many :follows
 
+  has_many :replies
 
  # Will return an array of follows for the given user instance
   has_many :received_follows, foreign_key: :followee_id, class_name: "Follow"
@@ -47,22 +48,22 @@ class User < ApplicationRecord
   def render
 
     {
-      email: self.email,
-      username: self.username,
-      display_name: self.display_name,
-      description: self.description,
-      post_count: self.posts.count,
+      email: email,
+      username: username,
+      display_name: display_name,
+      description: description,
+      post_count: posts.count,
       avatars: {
-        large: self.avatar.variant(:large)&.processed&.url,
-        medium: self.avatar.variant(:medium)&.processed&.url,
-        small: self.avatar.variant(:small)&.processed&.url,
-        thumb: self.avatar.variant(:thumb)&.processed&.url,
+        large: avatar.variant(:large)&.processed&.url,
+        medium: avatar.variant(:medium)&.processed&.url,
+        small: avatar.variant(:small)&.processed&.url,
+        thumb: avatar.variant(:thumb)&.processed&.url,
       },
-      gender: self.gender,
-      confirmed_at: self.confirmed_at,
-      avatar_dialog: self.avatar_dialog,
-      banner: self.banner.variant(:default)&.processed&.url,
-      join_date: self.created_at,
+      gender: gender,
+      confirmed_at: confirmed_at,
+      avatar_dialog: avatar_dialog,
+      banner: banner.variant(:default)&.processed&.url,
+      join_date: created_at,
       num_followers: followers.count,
       num_followed: followees.count
     }
@@ -71,6 +72,7 @@ class User < ApplicationRecord
   def ordered_posts(page)
     self
       .posts
+      .includes(:tags)
       .paginate(page: page, per_page: 20)
       .includes(:tags)
       .order(created_at: :desc)

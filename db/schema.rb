@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_22_055358) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_29_062401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,6 +117,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_22_055358) do
     t.bigint "repost_id"
     t.bigint "user_id"
     t.string "original_gif_url"
+    t.bigint "reply_id"
+    t.index ["reply_id"], name: "index_posts_on_reply_id"
     t.index ["repost_id"], name: "index_posts_on_repost_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
@@ -145,6 +147,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_22_055358) do
     t.boolean "avatar_dialog", default: false, null: false
     t.boolean "description_dialog", default: false, null: false
     t.string "display_name"
+    t.string "phone", default: "", null: false
+    t.string "sms_confirmation_token"
+    t.datetime "sms_confirmed_at"
+    t.datetime "sms_confirmation_sent_at"
+    t.string "unconfirmed_phone"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -154,10 +161,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_22_055358) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "follows", "users", column: "followee_id"
   add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "likes", "posts"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "posts", "posts", column: "reply_id"
   add_foreign_key "posts", "posts", column: "repost_id"
   add_foreign_key "posts", "users"
 end

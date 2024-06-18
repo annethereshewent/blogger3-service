@@ -22,10 +22,10 @@ class Api::V1::Users::PostsController < ApplicationController
   end
 
   def parent
-    post = Post.find(params[:id])
+    post = Post.includes(:tags).where("id in (select reply_id from posts where id = ?)", params[:id]).first
 
     render json: {
-      post: post.replyable.render
+      post: post.render
     }
   end
 end

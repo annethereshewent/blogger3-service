@@ -92,10 +92,6 @@ class Api::V1::Users::DashboardController < ApplicationController
 
   end
 
-  def fetch_replies
-
-  end
-
   def hide_avatar_dialog
     @user.avatar_dialog = true
 

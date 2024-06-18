@@ -44,6 +44,8 @@ Rails.application.routes.draw do
 
         get '/posts/:id' => 'posts#index'
 
+        get '/posts/:id/parent' => 'posts#parent'
+
         get '/replies/:id' => 'posts#replies'
       end
     end

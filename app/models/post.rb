@@ -66,7 +66,8 @@ class Post < ApplicationRecord
       original_gif_url: original_gif_url,
       created_at: created_at,
       updated_at: updated_at,
-      is_reply: reply_id != nil
+      is_reply: reply_id != nil,
+      reply_id: reply_id
     }
   end
 

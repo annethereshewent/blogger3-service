@@ -20,4 +20,12 @@ class Api::V1::Users::PostsController < ApplicationController
       replies: replies.map(&:render)
     }
   end
+
+  def parent
+    post = Post.find(params[:id])
+
+    render json: {
+      post: post.replyable.render
+    }
+  end
 end

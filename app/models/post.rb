@@ -23,7 +23,7 @@ class Post < ApplicationRecord
       .paginate(page: page, per_page: 20)
       .includes(:tags)
       .where(
-        'posts.id in (
+        'posts.deleted = false and posts.id in (
           select post_tags.post_id
           from post_tags, tags
           where post_tags.tag_id = tags.id and tags.tag = ?
@@ -36,7 +36,7 @@ class Post < ApplicationRecord
   def self.replyable_replies(replyable_id:, page:)
     Post
       .includes(:likes)
-      .where(reply_id: replyable_id)
+      .where(reply_id: replyable_id, deleted: false)
       .order(created_at: :asc)
       .paginate(page: page, per_page: 20)
   end
@@ -45,7 +45,7 @@ class Post < ApplicationRecord
     self
       .includes(:likes)
       .order(created_at: :asc)
-      .where(reply_id: id)
+      .where(reply_id: id, deleted: false)
       .paginate(page: page, per_page: 20)
   end
 
@@ -75,7 +75,7 @@ class Post < ApplicationRecord
     Post
       .paginate(page: page, per_page: 20)
       .includes(:tags)
-      .where(user_id: user_ids)
+      .where(user_id: user_ids, deleted: false)
       .order(updated_at: :desc)
   end
 end

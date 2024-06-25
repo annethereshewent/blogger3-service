@@ -20,7 +20,7 @@ class Post < ApplicationRecord
 
   def self.posts_by_tag(tag, page)
     Post.order('posts.id desc')
-      .paginate(page: page, per_page: 20, deleted: false)
+      .paginate(page: page, per_page: 20)
       .includes(:tags)
       .where(
         'posts.deleted = false and posts.id in (

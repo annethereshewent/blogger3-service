@@ -23,7 +23,7 @@ class Post < ApplicationRecord
       .paginate(page: page, per_page: 20)
       .includes(:tags)
       .where(
-        'posts.id in (
+        'posts.deleted = false and posts.id in (
           select post_tags.post_id
           from post_tags, tags
           where post_tags.tag_id = tags.id and tags.tag = ?
@@ -36,7 +36,7 @@ class Post < ApplicationRecord
   def self.replyable_replies(replyable_id:, page:)
     Post
       .includes(:likes)
-      .where(reply_id: replyable_id)
+      .where(reply_id: replyable_id, deleted: false)
       .order(created_at: :asc)
       .paginate(page: page, per_page: 20)
   end
@@ -45,37 +45,45 @@ class Post < ApplicationRecord
     self
       .includes(:likes)
       .order(created_at: :asc)
-      .where(reply_id: id)
+      .where(reply_id: id, deleted: false)
       .paginate(page: page, per_page: 20)
   end
 
   def render
-    {
-      id: id,
-      body: body,
-      user: user.render(),
-      images: images.map{ |image| {
-        original: image.url,
-        preview: image.variant(:preview).processed.url
-      } },
-      tags: tags.map{ |tag| tag.tag },
-      like_count: likes.count,
-      likes: likes.map(&:render),
-      reply_count: replies.count,
-      gif: gif.url,
-      original_gif_url: original_gif_url,
-      created_at: created_at,
-      updated_at: updated_at,
-      is_reply: reply_id != nil,
-      reply_id: reply_id
-    }
+    if deleted
+      {
+        id: id,
+        deleted: deleted
+      }
+    else
+      {
+        id: id,
+        body: body,
+        user: user.render(),
+        images: images.map{ |image| {
+          original: image.url,
+          preview: image.variant(:preview).processed.url
+        } },
+        tags: tags.map{ |tag| tag.tag },
+        like_count: likes.count,
+        likes: likes.map(&:render),
+        reply_count: replies.where(deleted: false).count,
+        gif: gif.url,
+        original_gif_url: original_gif_url,
+        created_at: created_at,
+        updated_at: updated_at,
+        is_reply: reply_id != nil,
+        reply_id: reply_id,
+        deleted: deleted
+      }
+    end
   end
 
    def self.dashboard_posts(page, user_ids)
     Post
       .paginate(page: page, per_page: 20)
       .includes(:tags)
-      .where(user_id: user_ids)
+      .where(user_id: user_ids, deleted: false)
       .order(updated_at: :desc)
   end
 end

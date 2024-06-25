@@ -139,6 +139,19 @@ class Api::V1::Users::DashboardController < ApplicationController
     }
   end
 
+  def delete_post
+    post = Post.find(params[:id])
+
+    post.deleted = true
+    post.deleted_at = DateTime.now
+
+    post.save!
+
+    render json: {
+      success: true
+    }
+  end
+
   private
     def post_params
       params.permit(:body, :repost_id, :images)

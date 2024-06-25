@@ -47,6 +47,8 @@ Rails.application.routes.draw do
         get '/posts/:id/parent' => 'posts#parent'
 
         get '/replies/:id' => 'posts#replies'
+
+        delete '/posts/:id' => 'dashboard#delete_post'
       end
     end
   end

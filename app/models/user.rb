@@ -73,6 +73,7 @@ class User < ApplicationRecord
     self
       .posts
       .includes(:tags)
+      .where(deleted: false)
       .paginate(page: page, per_page: 20)
       .includes(:tags)
       .order(created_at: :desc)
